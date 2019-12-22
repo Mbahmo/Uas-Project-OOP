@@ -5,9 +5,13 @@
  */
 package uas.project.penjualan;
 
+import java.awt.Dimension;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -87,6 +91,7 @@ private DefaultTableModel model;
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton4 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -181,6 +186,16 @@ private DefaultTableModel model;
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        jButton4.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/key.png"))); // NOI18N
+        jButton4.setText("  Ganti Password");
+        jButton4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -198,6 +213,8 @@ private DefaultTableModel model;
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
@@ -216,7 +233,8 @@ private DefaultTableModel model;
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addGap(9, 9, 9)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
                 .addContainerGap())
@@ -351,6 +369,75 @@ private DefaultTableModel model;
         jTextField1.setText("");
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        JLabel jPassword     = new JLabel("Password Lama");
+        JTextField password  = new JPasswordField()
+        {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(200, 30);
+            }
+        };
+        JLabel jPassword2      = new JLabel("Password Baru");
+        JTextField password2   = new JPasswordField()
+        {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(200, 30);
+            }
+        };
+        int i=jTable1.getSelectedRow();
+
+        if (i==-1){
+            JOptionPane.showMessageDialog(this, "Silahkan  pilih user terlebih dahulu");
+        }
+        else {
+            Object[] ob  = {jPassword, password};
+            Object[] ob2 = {jPassword2, password2};
+
+            int result  = JOptionPane.showConfirmDialog(null, ob, "Masukkan Password Lama",  JOptionPane.OK_CANCEL_OPTION);
+            int result2 = JOptionPane.showConfirmDialog(null, ob2, "Masukkan Password Baru", JOptionPane.OK_CANCEL_OPTION);
+            String passwordValue  = password.getText();
+            String passwordValue2 = password2.getText();
+
+            if (passwordValue.equals("")) {
+                JOptionPane.showMessageDialog(this, "Password Lama Masih Kosong");
+            }
+            else if(passwordValue2.equals("")) {
+                JOptionPane.showMessageDialog(this, "Password Baru Masih Kosong");
+            }
+            else {
+                String id = (String) model.getValueAt(i, 0);
+                try {
+                    Statement statement=(Statement)
+                    koneksi.getConnection().createStatement();
+                    String sql ="SELECT `tbuser`.`Password` FROM `tbuser` Where `Iduser`='"+id+"' AND `Password` = MD5('"+passwordValue+"')";
+                    ResultSet r = statement.executeQuery(sql);
+
+                    if (!r.next()) {
+                        JOptionPane.showMessageDialog(this, "Password Lama Salah. Coba Lagi", "Password Salah",JOptionPane.ERROR_MESSAGE);
+                    }
+                    else{
+                        try {
+                            koneksi.getConnection().createStatement();
+                            statement.executeUpdate("UPDATE `tbuser` SET `Password` = MD5('"+passwordValue2+"') WHERE `tbuser`.`IdUser` = '"+id+"';");
+                            statement.close();
+                            JOptionPane.showMessageDialog(this, "Berhasil Mengubah Password");
+                            tampildatauser();
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(this, "Gagal Mengubah Password\n"+e.getMessage());
+
+                        }
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, e);
+                }
+
+            }
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -390,6 +477,7 @@ private DefaultTableModel model;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
