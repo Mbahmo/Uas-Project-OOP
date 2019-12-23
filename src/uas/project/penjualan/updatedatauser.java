@@ -118,6 +118,11 @@ public String iduser;
         jLabel5.setText("No Telp");
 
         jTextField3.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jTextField3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField3KeyTyped(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -243,12 +248,15 @@ public String iduser;
                 
                 int jawaban = JOptionPane.showConfirmDialog(this, "Apakah anda yakin?",
                 "Pertanyaan",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-                if (jawaban==JOptionPane.YES_OPTION) {
-                      statement.executeUpdate("update tbuser set Username = ('"+username+"'),"
+                String sql = "update tbuser set Username = ('"+username+"'),"
                               + "NamaUser = ('"+nama+"'),"
                               + "NoTelpUser = ('"+notelp+"'),"
                               + "AlamatUser = ('"+alamat+"')"
-                              + " where IdUser = ('"+iduser+"');");
+                              + " where IdUser = ('"+iduser+"');";
+                
+                if (jawaban == JOptionPane.YES_OPTION) {
+                      statement.executeUpdate(sql);
+                      
                 statement.close();
                 JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
                 this.dispose();
@@ -267,6 +275,14 @@ public String iduser;
         jTextField3.setText("");
         jTextArea1.setText("");
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField3KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyTyped
+        // TODO add your handling code here:
+        char c = evt.getKeyChar();
+        if (!(Character.isDigit(c)|| (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField3KeyTyped
 
     /**
      * @param args the command line arguments

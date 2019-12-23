@@ -179,8 +179,8 @@ public class login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         
-        String username=(jTextField1.getText());
-        String password=(jPasswordField1.getText());
+        String username = (jTextField1.getText());
+        String password = (jPasswordField1.getText());
         
         if (username.equals("")) {
             JOptionPane.showMessageDialog(this, "Username Masih Kosong");
@@ -195,6 +195,9 @@ public class login extends javax.swing.JFrame {
                 ResultSet rs = statement.executeQuery(sql);
                 if (rs.next()){
                   JOptionPane.showMessageDialog(this, "     Selamat Datang "+username);
+                  menuutama menuutama = new menuutama();
+                  menuutama.show();
+                  this.dispose();
                 } else {
                   JOptionPane.showMessageDialog(this, "Username Atau Password Salah");
                 }
