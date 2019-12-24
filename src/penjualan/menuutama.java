@@ -3,16 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package uas.project.penjualan;
+package penjualan;
 
 import java.awt.Dimension;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -20,7 +31,12 @@ import javax.swing.table.DefaultTableModel;
  */
 public class menuutama extends javax.swing.JFrame {
     
-    private DefaultTableModel model, model2;
+    public String iduser;
+    private DefaultTableModel model, model2, model3;
+    JasperReport jasperReport;
+    JasperDesign jasperDesign;
+    JasperPrint jasperPrint;
+    Map<String, Object> param = new HashMap<String, Object>();
 
     /**
      * Creates new form menuutama
@@ -42,7 +58,7 @@ public class menuutama extends javax.swing.JFrame {
         model.addColumn("Alamat");
         model.addColumn("No Telp");
         
-         model2 = new  DefaultTableModel()
+        model2 = new  DefaultTableModel()
         { @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -54,10 +70,23 @@ public class menuutama extends javax.swing.JFrame {
         model2.addColumn("Nama Barang");
         model2.addColumn("Harga");
         
+        model3 = new  DefaultTableModel()
+        { @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        jTable3.setModel(model3);
+        model3.addColumn("ID");
+        model3.addColumn("Barang & Harga");
+        model3.addColumn("Jumlah");
+        model3.addColumn("Total");
+        
         tampildatauser();
         tampildatabarang();
+        tampildatapenjualan();
     }
-    
     void tampildatauser() {
         model.getDataVector().removeAllElements();
         model.fireTableDataChanged();
@@ -104,6 +133,30 @@ public class menuutama extends javax.swing.JFrame {
             System.out.print(e.getMessage());
         }
     }
+    void tampildatapenjualan() {
+        model3.getDataVector().removeAllElements();
+        model3.fireTableDataChanged();
+        try {
+            Statement statement=(Statement)
+            koneksi.getConnection().createStatement();
+            String sql="SELECT * FROM tbdetailpenjualan INNER JOIN tbpenjualan on tbpenjualan.idpenjualan = tbdetailpenjualan.idpenjualan "
+                 + "INNER JOIN tbbarang on tbbarang.idbarang = tbdetailpenjualan.idbarang where tbpenjualan.statuspenjualan = 'FALSE'";
+            ResultSet r = statement.executeQuery(sql);
+
+           while (r.next()) {
+                Object[] o=new Object[5];
+                o[0] = r.getString("IdDetailPenjualan");
+                o[1] = r.getString("NamaBarang") + "     -     "+ r.getString("HargaBarang");
+                o[2] = r.getString("JumlahBarang");
+                o[3] = r.getDouble("HargaBarang") * r.getInt("JumlahBarang");
+                model3.addRow(o);
+           }
+           r.close();
+           statement.close();
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
+    }
     
     void tableusersearch(){
        DefaultTableModel tabelTampil1 = new DefaultTableModel();
@@ -116,11 +169,12 @@ public class menuutama extends javax.swing.JFrame {
        try {
             Statement statement=(Statement)
             koneksi.getConnection().createStatement();
-            String sql = "Select * from tbuser where IdUser like '%" + jTextField1.getText() + "%'" 
-                    + "or NamaUser like '%"   + jTextField1.getText() + "%'"
-                    + "or Username like '%" + jTextField1.getText() + "%'"
-                    + "or AlamatUser like '%" + jTextField1.getText() + "%'"
-                    + "or NoTelpUser like '%" + jTextField1.getText() + "%'";
+            String search = jTextField1.getText();
+            String sql = "Select * from tbuser where IdUser like '%" + search + "%'" 
+                    + "or NamaUser like '%"   + search + "%'"
+                    + "or Username like '%"   + search + "%'"
+                    + "or AlamatUser like '%" + search + "%'"
+                    + "or NoTelpUser like '%" + search + "%'";
             ResultSet rs = statement.executeQuery(sql);
             while (rs.next()) {
             tabelTampil1.addRow(new Object[]{
@@ -136,7 +190,34 @@ public class menuutama extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e);
         }
-     }
+    }
+    void tablebarangsearch(){
+       DefaultTableModel tabelTampil2 = new DefaultTableModel();
+       tabelTampil2.addColumn("Id Barang");
+       tabelTampil2.addColumn("Nama Barang");
+       tabelTampil2.addColumn("Harga");
+       
+       try {
+            Statement statement=(Statement)
+            koneksi.getConnection().createStatement();
+            String search = jTextField2.getText();
+            String sql = "Select * from tbbarang where IdBarang like '%" + search + "%'" 
+                    + "or NamaBarang like '%"   + search + "%'"
+                    + "or HargaBarang like '%" + search + "%'";
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+            tabelTampil2.addRow(new Object[]{
+                rs.getString("IdBarang"),
+                rs.getString("NamaBarang"),
+                rs.getString("HargaBarang"),
+            });
+            }
+          jTable2.setModel(tabelTampil2);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -171,12 +252,23 @@ public class menuutama extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jButton8 = new javax.swing.JButton();
+        Penjualan = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(800, 500));
         setMinimumSize(new java.awt.Dimension(800, 500));
         setResizable(false);
 
@@ -315,7 +407,7 @@ public class menuutama extends javax.swing.JFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton4))
                 .addGap(9, 9, 9)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -452,11 +544,161 @@ public class menuutama extends javax.swing.JFrame {
                     .addComponent(jButton7)
                     .addComponent(jButton8))
                 .addGap(9, 9, 9)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Barang", Barang);
+
+        Penjualan.setBackground(new java.awt.Color(240, 240, 240));
+        Penjualan.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(245, 245, 245), 3, true));
+
+        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(10, 10, 10));
+        jLabel3.setText("Search :");
+
+        jPanel9.setBackground(new java.awt.Color(64, 134, 244));
+
+        jLabel11.setFont(new java.awt.Font("Nirmala UI", 1, 25)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("Penjualan");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addComponent(jLabel11)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(13, Short.MAX_VALUE)
+                .addComponent(jLabel11)
+                .addGap(10, 10, 10))
+        );
+
+        jTextField3.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        jTextField3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField3KeyReleased(evt);
+            }
+        });
+
+        jButton9.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/tambah.png"))); // NOI18N
+        jButton9.setText("   Tambah");
+        jButton9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
+        jButton10.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/update.png"))); // NOI18N
+        jButton10.setText("  Update");
+        jButton10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
+        jButton11.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/delete.png"))); // NOI18N
+        jButton11.setText("  Delete");
+        jButton11.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
+        jTable3.setFont(new java.awt.Font("SansSerif", 0, 11)); // NOI18N
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable3);
+
+        jButton12.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/payment.png"))); // NOI18N
+        jButton12.setText(" Bayar");
+        jButton12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        jButton13.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/report.png"))); // NOI18N
+        jButton13.setText(" Cetak");
+        jButton13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout PenjualanLayout = new javax.swing.GroupLayout(Penjualan);
+        Penjualan.setLayout(PenjualanLayout);
+        PenjualanLayout.setHorizontalGroup(
+            PenjualanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PenjualanLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 660, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(PenjualanLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(PenjualanLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addContainerGap())
+        );
+        PenjualanLayout.setVerticalGroup(
+            PenjualanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PenjualanLayout.createSequentialGroup()
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PenjualanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PenjualanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton9)
+                    .addComponent(jButton10)
+                    .addComponent(jButton11)
+                    .addComponent(jButton12)
+                    .addComponent(jButton13))
+                .addGap(9, 9, 9)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Penjualan", Penjualan);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -564,7 +806,7 @@ public class menuutama extends javax.swing.JFrame {
         else {
             try {
 
-                String idpegawai     = (String) jTable1.getValueAt(i, 0);
+                String iduser     = (String) jTable1.getValueAt(i, 0);
                 Statement statement  = (Statement)
                 koneksi.getConnection().createStatement();
 
@@ -572,7 +814,7 @@ public class menuutama extends javax.swing.JFrame {
                     "Pertanyaan",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
                 
                 if (jawaban == JOptionPane.YES_OPTION) {
-                    statement.executeUpdate("delete from tbuser where IdUser=('"+idpegawai+"');");
+                    statement.executeUpdate("delete from tbuser where IdUser=('"+iduser+"');");
                     statement.close();
                 }
                 JOptionPane.showMessageDialog(this, "Data Berhasil Dihapus");
@@ -657,11 +899,11 @@ public class menuutama extends javax.swing.JFrame {
 
     private void jTextField2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyReleased
         // TODO add your handling code here:
+        tablebarangsearch();
     }//GEN-LAST:event_jTextField2KeyReleased
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        
         tambahdatabarang tambahdatabarang = new tambahdatabarang(this, rootPaneCheckingEnabled);
         tambahdatabarang.show();
         tambahdatabarang.setAlwaysOnTop(true);
@@ -696,11 +938,102 @@ public class menuutama extends javax.swing.JFrame {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
+        int i = jTable2.getSelectedRow();
+        if (i == -1) {
+            JOptionPane.showMessageDialog(this, "      Belum Memilih Data");
+            return;
+        }
+        else {
+            try {
+
+                String idbarang     = (String) jTable2.getValueAt(i, 0);
+                Statement statement  = (Statement)
+                koneksi.getConnection().createStatement();
+
+                int jawaban = JOptionPane.showConfirmDialog(this, "Apakah anda yakin?",
+                    "Pertanyaan",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                
+                if (jawaban == JOptionPane.YES_OPTION) {
+                    statement.executeUpdate("delete from tbbarang where IdBarang=('"+idbarang+"');");
+                    statement.close();
+                }
+                JOptionPane.showMessageDialog(this, "Data Berhasil Dihapus");
+                tampildatauser();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Data Gagal Dihapus\n"+e.getMessage());
+            }
+        }
+        jTable2.setModel(model);
+        tampildatabarang();
+        jTextField2.setText("");
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
+        try {
+            InputStream file = getClass().getResourceAsStream("/report/barang.jrxml");
+            jasperDesign = JRXmlLoader.load(file);
+            param.clear();
+            jasperReport = JasperCompileManager.compileReport(jasperDesign);
+            jasperPrint  = JasperFillManager.fillReport(jasperReport, param, koneksi.getConnection());
+            JasperViewer.viewReport(jasperPrint, false);
+        } 
+        catch (Exception e) { 
+            e.printStackTrace(); 
+        }
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3KeyReleased
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        tambahdatapenjualan tambahdatapenjualan = new tambahdatapenjualan(this, rootPaneCheckingEnabled);
+        tambahdatapenjualan.iduser = iduser;
+        tambahdatapenjualan.show();
+        tambahdatapenjualan.setAlwaysOnTop(true);
+        jTable3.setModel(model3);
+        tampildatapenjualan();
+        jTextField3.setText("");
+        
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+        int i = jTable3.getSelectedRow();
+        if (i == -1){
+            JOptionPane.showMessageDialog(this, "   Silahkan Pilih Data Barang");
+        }
+        else {
+            String iddetailpenjualanpenjualan  = (String) jTable3.getValueAt(i, 0);
+            String barang                      = (String) jTable2.getValueAt(i, 1);
+            String jumlah                      = (String) jTable2.getValueAt(i, 2);
+                
+            updatedatapenjualan updatedatapenjualan  = new updatedatapenjualan(this, rootPaneCheckingEnabled);
+            updatedatapenjualan.iddetailpenjualan    = iddetailpenjualanpenjualan;
+            updatedatapenjualan.jComboBox1.setSelectedItem(barang);
+            updatedatapenjualan.jTextField2.setText(jumlah);
+            updatedatapenjualan.show();
+            updatedatapenjualan.setAlwaysOnTop(true);
+            jTable3.setModel(model3);
+            tampildatapenjualan();
+            jTextField3.setText("");
+        }
+        
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton13ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -739,8 +1072,13 @@ public class menuutama extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Barang;
+    private javax.swing.JPanel Penjualan;
     private javax.swing.JPanel User;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -748,9 +1086,12 @@ public class menuutama extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
@@ -758,12 +1099,16 @@ public class menuutama extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     public javax.swing.JTable jTable1;
     public javax.swing.JTable jTable2;
+    public javax.swing.JTable jTable3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }

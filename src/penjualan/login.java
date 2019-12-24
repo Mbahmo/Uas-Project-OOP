@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package uas.project.penjualan;
+package penjualan;
 
 import java.awt.Color;
 import java.sql.ResultSet;
@@ -56,7 +56,6 @@ public class login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Aplikasi Penjualan");
         setAlwaysOnTop(true);
-        setMaximumSize(new java.awt.Dimension(400, 600));
         setMinimumSize(new java.awt.Dimension(400, 600));
         setSize(new java.awt.Dimension(520, 400));
         getContentPane().setLayout(null);
@@ -196,6 +195,7 @@ public class login extends javax.swing.JFrame {
                 if (rs.next()){
                   JOptionPane.showMessageDialog(this, "     Selamat Datang "+username);
                   menuutama menuutama = new menuutama();
+                  menuutama.iduser = rs.getString("Iduser");
                   menuutama.show();
                   this.dispose();
                 } else {

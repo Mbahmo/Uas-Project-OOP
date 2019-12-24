@@ -3,26 +3,45 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package uas.project.penjualan;
+package penjualan;
 
 import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Mbahmo
  */
-public class tambahdatabarang extends javax.swing.JDialog {
-
+public class tambahdatapenjualan extends javax.swing.JDialog {
+public String iduser;
     /**
      * Creates new form simpandatapegawai
      */
-    public tambahdatabarang(java.awt.Frame parent, boolean modal) {
+    public tambahdatapenjualan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        fillcombo();
     }
-
+    void fillcombo() {
+        Statement statement;
+        try {
+            statement = (Statement)
+            koneksi.getConnection().createStatement();
+                                 
+            String sql ="SELECT * from tbbarang";
+            ResultSet r = statement.executeQuery(sql); 
+           
+            while(r.next()){           
+                jComboBox1.addItem(r.getString("IdBarang") + "     -     "+ r.getString("NamaBarang"));
+            }
+           
+        }  catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e);
+        }
+  }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -39,9 +58,9 @@ public class tambahdatabarang extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Tambah Data Pegawai");
@@ -65,23 +84,23 @@ public class tambahdatabarang extends javax.swing.JDialog {
         jLabel2.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText(" TAMBAH DATA BARANG");
+        jLabel2.setText("PENJUALAN");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(83, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(79, 79, 79))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jButton2.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
@@ -98,18 +117,15 @@ public class tambahdatabarang extends javax.swing.JDialog {
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Nama");
+        jLabel1.setText("Barang");
 
-        jTextField1.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("x");
 
-        jLabel5.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("Harga");
-
-        jTextField3.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
-        jTextField3.addKeyListener(new java.awt.event.KeyAdapter() {
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField3KeyTyped(evt);
+                jTextField2KeyTyped(evt);
             }
         });
 
@@ -119,14 +135,14 @@ public class tambahdatabarang extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                    .addComponent(jTextField3))
-                .addGap(10, 10, 10))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(jLabel3)
+                .addGap(10, 10, 10)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,11 +150,9 @@ public class tambahdatabarang extends javax.swing.JDialog {
                 .addContainerGap(10, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10))
         );
 
@@ -147,18 +161,13 @@ public class tambahdatabarang extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(12, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(212, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,49 +200,55 @@ public class tambahdatabarang extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String nama    = (jTextField1.getText());
-        String harga   = (jTextField3.getText());
         
-        
-        if(nama.equals("")) {
-            JOptionPane.showMessageDialog(this, "Nama Belum Diisi");
-        }
-        else if(harga.equals("")) {
-            JOptionPane.showMessageDialog(this, "Harga Belum Diisi");
+        String id = jComboBox1.getSelectedItem().toString();
+        if(jTextField2.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Jumlah Belum Diisi");
         }
         else
             try {
-
                 Statement statement = (Statement)
                         
                 koneksi.getConnection().createStatement();
-                String sql = "insert into tbbarang (NamaBarang, HargaBarang) value('"+nama+"', '"+harga+"')";
-                statement.executeUpdate(sql);
+                
+                String sql  = "SELECT * from tbpenjualan where StatusPenjualan = 'FALSE'";
+                ResultSet r = statement.executeQuery(sql); 
+                if(!r.isBeforeFirst()) {
+                    sql = "insert into tbpenjualan (IdUser, StatusPenjualan, TanggalTransaksi) value('"+iduser+"','FALSE', '"+LocalDateTime.now()+"')";
+                    statement.executeUpdate(sql);
+                }
+            
+                sql            = "SELECT * from tbpenjualan where StatusPenjualan = 'FALSE'";
+                ResultSet r2   = statement.executeQuery(sql); 
+                
+                if(r2.next()) {
+                    String idpenjualan = r2.getString("IdPenjualan");
+                    sql                = "insert into tbdetailpenjualan (IdPenjualan, IdBarang, JumlahBarang) value('"+idpenjualan+"', '"+id.substring(0, 6)+"', '"+jTextField2.getText()+"')";
+                    statement.executeUpdate(sql);
+                }
+                
                 statement.close();
                 
                 JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
                 this.dispose();
-                
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Data Gagal Disimpan\n"+e.getMessage());
+                System.out.println(e);
             }
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        jTextField1.setText("");
-        jTextField3.setText("");
           
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jTextField3KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyTyped
+    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
         // TODO add your handling code here:
         char c = evt.getKeyChar();
         if (!(Character.isDigit(c)|| (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)) {
             evt.consume();
         }
-    }//GEN-LAST:event_jTextField3KeyTyped
+    }//GEN-LAST:event_jTextField2KeyTyped
 
     /**
      * @param args the command line arguments
@@ -252,14 +267,38 @@ public class tambahdatabarang extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(tambahdatabarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tambahdatapenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(tambahdatabarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tambahdatapenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(tambahdatabarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tambahdatapenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(tambahdatabarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(tambahdatapenjualan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -272,7 +311,7 @@ public class tambahdatabarang extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                tambahdatabarang dialog = new tambahdatabarang(new javax.swing.JFrame(), true);
+                tambahdatapenjualan dialog = new tambahdatapenjualan(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -287,14 +326,14 @@ public class tambahdatabarang extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    public javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
     private void tampildatajenis() {
