@@ -189,18 +189,18 @@ public String iduser;
             Statement statement = (Statement)
 
             koneksi.getConnection().createStatement();
-
-            String sql  = "SELECT * from tbpenjualan where StatusPenjualan = 'FALSE'";
-            ResultSet r = statement.executeQuery(sql); 
-            if(!r.isBeforeFirst()) {
-                sql = "insert into tbpenjualan (IdUser, StatusPenjualan, TanggalTransaksi) value('"+iduser+"','FALSE', '"+LocalDateTime.now()+"')";
-                statement.executeUpdate(sql);
+                
+            int jawaban = JOptionPane.showConfirmDialog(this, "Pembayaran dengan Total Belanja "+ jLabel3.getText(),
+            "Pertanyaan",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE);
+            
+            if (jawaban == JOptionPane.YES_OPTION) {
+                String sql = "update tbpenjualan set StatusPenjualan = 'TRUE'"
+                         + " where StatusPenjualan = 'FALSE';";
+               statement.executeUpdate(sql);
+               statement.close();
+               JOptionPane.showMessageDialog(this, "Pembayaran Berhasil Disimpan");
+               this.dispose();
             }
-
-            statement.close();
-
-            JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
-            this.dispose();
         } catch (Exception e) {
             System.out.println(e);
         }

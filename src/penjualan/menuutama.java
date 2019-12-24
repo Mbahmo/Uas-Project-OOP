@@ -1058,6 +1058,12 @@ public class menuutama extends javax.swing.JFrame {
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         // TODO add your handling code here:
+        pembayaran pembayaran = new pembayaran(this, rootPaneCheckingEnabled);
+        pembayaran.show();
+        pembayaran.setAlwaysOnTop(true);
+        jTable3.setModel(model3);
+        tampildatapenjualan();
+        jTextField3.setText("");
         
     }//GEN-LAST:event_jButton12ActionPerformed
 
