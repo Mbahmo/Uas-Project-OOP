@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<queryString language="SQL">
-		<![CDATA[select * from tbbarang]]>
+		<![CDATA[SELECT SUM(JumlahBarang * HargaBarang) as Penjualan, tbpenjualan.* from tbdetailpenjualan INNER JOIN tbpenjualan ON tbdetailpenjualan.IdPenjualan = tbpenjualan.IdPenjualan INNER JOIN tbbarang ON tbbarang.IdBarang = tbdetailpenjualan.IdBarang where StatusPenjualan = 'TRUE' GROUP BY IdPenjualan]]>
 	</queryString>
-	<field name="IdBarang" class="java.lang.Integer">
+	<field name="Penjualan" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="NamaBarang" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="HargaBarang" class="java.lang.Double">
+	<field name="TanggalTransaksi" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -28,7 +25,7 @@
 				<textElement textAlignment="Center">
 					<font size="26" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Laporan Barang]]></text>
+				<text><![CDATA[Laporan Penjualan]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -39,48 +36,34 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="60" splitType="Stretch">
+		<band height="40" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="139" height="20"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[ID Barang :]]></text>
+				<text><![CDATA[Total Penjualan :]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="¤ #,##0.00">
 				<reportElement x="139" y="0" width="416" height="20"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{IdBarang}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{Penjualan}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="20" width="139" height="20"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Nama Barang :]]></text>
+				<text><![CDATA[Waktu Transaksi :]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="139" y="20" width="416" height="20"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{NamaBarang}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="40" width="139" height="20"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[Harga Barang :]]></text>
-			</staticText>
-			<textField pattern="¤ #,##0">
-				<reportElement x="139" y="40" width="416" height="20"/>
-				<textElement>
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Double"><![CDATA[$F{HargaBarang}]]></textFieldExpression>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{TanggalTransaksi}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

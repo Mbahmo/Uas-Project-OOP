@@ -45,7 +45,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[IdBarang]]></text>
+				<text><![CDATA[ID Barang :]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="139" y="0" width="416" height="20"/>
@@ -59,7 +59,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[NamaBarang]]></text>
+				<text><![CDATA[Nama Barang :]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="139" y="20" width="416" height="20"/>
@@ -73,7 +73,7 @@
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[HargaBarang]]></text>
+				<text><![CDATA[Harga Barang :]]></text>
 			</staticText>
 			<textField pattern="¤ #,##0">
 				<reportElement x="139" y="40" width="416" height="20"/>

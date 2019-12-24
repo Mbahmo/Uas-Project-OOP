@@ -31,7 +31,7 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class menuutama extends javax.swing.JFrame {
     
-    public String iduser;
+    public String iduser, username;
     private DefaultTableModel model, model2, model3;
     JasperReport jasperReport;
     JasperDesign jasperDesign;
@@ -82,6 +82,7 @@ public class menuutama extends javax.swing.JFrame {
         model3.addColumn("ID & Nama Barang");
         model3.addColumn("Jumlah");
         model3.addColumn("Total");
+        model3.addColumn("Admin");
         
         tampildatauser();
         tampildatabarang();
@@ -137,10 +138,10 @@ public class menuutama extends javax.swing.JFrame {
         model3.getDataVector().removeAllElements();
         model3.fireTableDataChanged();
         try {
-            Statement statement=(Statement)
+            Statement statement = (Statement)
             koneksi.getConnection().createStatement();
-            String sql="SELECT * FROM tbdetailpenjualan INNER JOIN tbpenjualan on tbpenjualan.idpenjualan = tbdetailpenjualan.idpenjualan "
-                 + "INNER JOIN tbbarang on tbbarang.idbarang = tbdetailpenjualan.idbarang where tbpenjualan.statuspenjualan = 'FALSE'";
+            String sql          = "SELECT * FROM tbdetailpenjualan INNER JOIN tbpenjualan on tbpenjualan.idpenjualan = tbdetailpenjualan.idpenjualan "
+                 + "INNER JOIN tbbarang on tbbarang.idbarang = tbdetailpenjualan.idbarang INNER JOIN tbuser ON tbpenjualan.iduser = tbuser.iduser where tbpenjualan.statuspenjualan = 'FALSE'";
             ResultSet r = statement.executeQuery(sql);
 
            while (r.next()) {
@@ -149,6 +150,7 @@ public class menuutama extends javax.swing.JFrame {
                 o[1] = r.getString("IdBarang") + "     -     "+ r.getString("NamaBarang");
                 o[2] = r.getString("JumlahBarang");
                 o[3] = r.getDouble("HargaBarang") * r.getInt("JumlahBarang");
+                o[4] = r.getString("NamaUser");
                 model3.addRow(o);
            }
            r.close();
@@ -267,6 +269,7 @@ public class menuutama extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Menu Utama");
@@ -721,14 +724,24 @@ public class menuutama extends javax.swing.JFrame {
         jMenu1.setText("Menu");
 
         jMenuItem1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/logout.png"))); // NOI18N
-        jMenuItem1.setText("Keluar");
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/exit.png"))); // NOI18N
+        jMenuItem1.setText("Logout");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
         });
         jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/logout.png"))); // NOI18N
+        jMenuItem2.setText("Keluar");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
 
         jMenuBar1.add(jMenu1);
 
@@ -751,7 +764,15 @@ public class menuutama extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        this.dispose();
+        login login = new login();
+        int jawaban = JOptionPane.showConfirmDialog(this, "Yakin ingin logout?",
+            "Konfirmasi Logout",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE
+        );
+        if (jawaban == JOptionPane.YES_OPTION) {
+            JOptionPane.showMessageDialog(this, "     Sampai Jumpa " + username);
+            login.show();
+            this.dispose();
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
@@ -1069,7 +1090,29 @@ public class menuutama extends javax.swing.JFrame {
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
+        try {
+            InputStream file = getClass().getResourceAsStream("/report/penjualan.jrxml");
+            jasperDesign = JRXmlLoader.load(file);
+            param.clear();
+            jasperReport = JasperCompileManager.compileReport(jasperDesign);
+            jasperPrint  = JasperFillManager.fillReport(jasperReport, param, koneksi.getConnection());
+            JasperViewer.viewReport(jasperPrint, false);
+        } 
+        catch (Exception e) { 
+            e.printStackTrace(); 
+        }
     }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        int jawaban = JOptionPane.showConfirmDialog(this, "Yakin ingin keluar aplikasi?",
+            "Konfirmasi Keluar",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE
+        );
+        if (jawaban == JOptionPane.YES_OPTION) {
+            JOptionPane.showMessageDialog(this, "     Sampai Jumpa " + username);
+            this.dispose();
+        }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1132,6 +1175,7 @@ public class menuutama extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;

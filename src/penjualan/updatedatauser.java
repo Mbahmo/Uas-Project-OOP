@@ -6,6 +6,7 @@
 package penjualan;
 
 import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
@@ -248,18 +249,25 @@ public String iduser;
                 
                 int jawaban = JOptionPane.showConfirmDialog(this, "Apakah anda yakin?",
                 "Pertanyaan",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-                String sql = "update tbuser set Username = ('"+username+"'),"
-                              + "NamaUser = ('"+nama+"'),"
-                              + "NoTelpUser = ('"+notelp+"'),"
-                              + "AlamatUser = ('"+alamat+"')"
-                              + " where IdUser = ('"+iduser+"');";
                 
                 if (jawaban == JOptionPane.YES_OPTION) {
-                      statement.executeUpdate(sql);
-                      
-                statement.close();
-                JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
-                this.dispose();
+                    String sql  = "SELECT * from tbuser where Username = '"+username+"' AND IdUser != '"+iduser+"';";
+                    ResultSet r = statement.executeQuery(sql); 
+
+                    if(!r.isBeforeFirst()) {
+                        sql = "update tbuser set Username = ('"+username+"'),"
+                                      + "NamaUser = ('"+nama+"'),"
+                                      + "NoTelpUser = ('"+notelp+"'),"
+                                      + "AlamatUser = ('"+alamat+"')"
+                                      + " where IdUser = ('"+iduser+"');";
+                        statement.executeUpdate(sql);
+                        statement.close();
+                        JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
+                        this.dispose();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Username Sudah Terpakai", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                    } 
                 }
                 
             } catch (Exception e) {

@@ -196,6 +196,7 @@ public class login extends javax.swing.JFrame {
                   JOptionPane.showMessageDialog(this, "     Selamat Datang "+username);
                   menuutama menuutama = new menuutama();
                   menuutama.iduser = rs.getString("Iduser");
+                  menuutama.username = rs.getString("Username");
                   menuutama.show();
                   this.dispose();
                 } else {

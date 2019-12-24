@@ -6,7 +6,9 @@
 package penjualan;
 
 import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
 
 /**
@@ -259,15 +261,21 @@ public class tambahdatauser extends javax.swing.JDialog {
             try {
 
                 Statement statement = (Statement)
-                        
                 koneksi.getConnection().createStatement();
-                String sql = "insert into tbuser (Username, Password, NamaUser, AlamatUser, NoTelpUser) "
-                    + "value('"+username+"', MD5('"+password+"'), '"+nama+"', '"+alamat+"', '"+notelp+"')";
-                statement.executeUpdate(sql);
-                statement.close();
+                String sql  = "SELECT * from tbuser where Username = '"+username+"'";
+                ResultSet r = statement.executeQuery(sql); 
+                if(!r.isBeforeFirst()) {
+                    sql = "insert into tbuser (Username, Password, NamaUser, AlamatUser, NoTelpUser) "
+                        + "value('"+username+"', MD5('"+password+"'), '"+nama+"', '"+alamat+"', '"+notelp+"')";
+                    statement.executeUpdate(sql);
+                    JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
+                    statement.close();
+                    this.dispose();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Username Sudah Terpakai", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
                 
-                JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
-                this.dispose();
                 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Data Gagal Disimpan\n"+e.getMessage());
