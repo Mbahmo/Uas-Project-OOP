@@ -45,7 +45,7 @@ public String idbarang;
         jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Tambah Data Pegawai");
+        setTitle("Update Data Barang");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));

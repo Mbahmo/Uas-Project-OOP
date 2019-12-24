@@ -49,7 +49,7 @@ public String iduser;
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Tambah Data Pegawai");
+        setTitle("Update Data User");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));

@@ -51,7 +51,7 @@ public class tambahdatauser extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Tambah Data Pegawai");
+        setTitle("Tambah Data User");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));

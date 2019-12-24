@@ -63,7 +63,7 @@ public String iddetailpenjualan;
         jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Tambah Data Pegawai");
+        setTitle("Update Penjualan");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
@@ -91,7 +91,7 @@ public String iddetailpenjualan;
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(83, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(79, 79, 79))
         );
@@ -123,6 +123,12 @@ public String iddetailpenjualan;
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("x");
 
+        jTextField2.setText("0");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
         jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jTextField2KeyTyped(evt);
@@ -141,8 +147,8 @@ public String iddetailpenjualan;
                 .addGap(10, 10, 10)
                 .addComponent(jLabel3)
                 .addGap(10, 10, 10)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,7 +168,7 @@ public String iddetailpenjualan;
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(212, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -215,7 +221,7 @@ public String iddetailpenjualan;
                 "Pertanyaan",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
                 String sql = "update tbdetailpenjualan set IdBarang = ('"+id.substring(0, 6)+"'),"
                               + "JumlahBarang = ('"+jTextField2.getText()+"')"
-                              + " where IdBarang = ('"+iddetailpenjualan+"');";
+                              + " where IdDetailPenjualan = ('"+iddetailpenjualan+"');";
                 if (jawaban == JOptionPane.YES_OPTION) {
                     statement.executeUpdate(sql);
                     statement.close();
@@ -241,6 +247,12 @@ public String iddetailpenjualan;
             evt.consume();
         }
     }//GEN-LAST:event_jTextField2KeyTyped
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+        jComboBox1.setSelectedIndex(0);
+        jTextField2.setText("0");
+    }//GEN-LAST:event_jTextField2ActionPerformed
 
     /**
      * @param args the command line arguments

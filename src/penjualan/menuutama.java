@@ -79,7 +79,7 @@ public class menuutama extends javax.swing.JFrame {
         
         jTable3.setModel(model3);
         model3.addColumn("ID");
-        model3.addColumn("Barang & Harga");
+        model3.addColumn("ID & Nama Barang");
         model3.addColumn("Jumlah");
         model3.addColumn("Total");
         
@@ -146,7 +146,7 @@ public class menuutama extends javax.swing.JFrame {
            while (r.next()) {
                 Object[] o=new Object[5];
                 o[0] = r.getString("IdDetailPenjualan");
-                o[1] = r.getString("NamaBarang") + "     -     "+ r.getString("HargaBarang");
+                o[1] = r.getString("IdBarang") + "     -     "+ r.getString("NamaBarang");
                 o[2] = r.getString("JumlahBarang");
                 o[3] = r.getDouble("HargaBarang") * r.getInt("JumlahBarang");
                 model3.addRow(o);
@@ -269,6 +269,7 @@ public class menuutama extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Menu Utama");
         setMinimumSize(new java.awt.Dimension(800, 500));
         setResizable(false);
 
@@ -666,9 +667,9 @@ public class menuutama extends javax.swing.JFrame {
                 .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(4, 4, 4)
                 .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1007,8 +1008,8 @@ public class menuutama extends javax.swing.JFrame {
         }
         else {
             String iddetailpenjualanpenjualan  = (String) jTable3.getValueAt(i, 0);
-            String barang                      = (String) jTable2.getValueAt(i, 1);
-            String jumlah                      = (String) jTable2.getValueAt(i, 2);
+            String barang                      = (String) jTable3.getValueAt(i, 1);
+            String jumlah                      = (String) jTable3.getValueAt(i, 2);
                 
             updatedatapenjualan updatedatapenjualan  = new updatedatapenjualan(this, rootPaneCheckingEnabled);
             updatedatapenjualan.iddetailpenjualan    = iddetailpenjualanpenjualan;
@@ -1025,10 +1026,39 @@ public class menuutama extends javax.swing.JFrame {
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
+        int i = jTable3.getSelectedRow();
+        if (i == -1) {
+            JOptionPane.showMessageDialog(this, "      Belum Memilih Data");
+            return;
+        }
+        else {
+            try {
+
+                String iddetailpenjualan     = (String) jTable3.getValueAt(i, 0);
+                Statement statement  = (Statement)
+                koneksi.getConnection().createStatement();
+
+                int jawaban = JOptionPane.showConfirmDialog(this, "Apakah anda yakin?",
+                    "Pertanyaan",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                
+                if (jawaban == JOptionPane.YES_OPTION) {
+                    statement.executeUpdate("delete from tbdetailpenjualan where IdDetailPenjualan=('"+iddetailpenjualan+"');");
+                    statement.close();
+                }
+                JOptionPane.showMessageDialog(this, "Data Berhasil Dihapus");
+                tampildatauser();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Data Gagal Dihapus\n"+e.getMessage());
+            }
+        }
+        jTable3.setModel(model3);
+        tampildatapenjualan();
+        jTextField3.setText("");
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
